@@ -1,26 +1,19 @@
 //variables
-//resultados
-const resultados = document.querySelector('#resultado');
-//select marca
+const resultado = document.querySelector('#resultado');
+//variables de los inputs
+//const option donde iran los años
 const marca = document.querySelector('#marca');
-//select year
 const year = document.querySelector('#year');
-//select minimo
 const minimo = document.querySelector('#minimo');
-//select maximo
 const maximo = document.querySelector('#maximo');
-//select puertas
 const puertas = document.querySelector('#puertas');
-//select transmision
 const transmision = document.querySelector('#transmision');
-//select color
 const color = document.querySelector('#color');
-//año actual
-const maxi = new Date().getFullYear();
-//año minimo
-const min = maxi - 10;
-
-//objeto con los datos de busqueda vacios
+//año actual para llenar el select
+const maxi = new Date().getFullYear();//2022
+//año actual menos 10
+const min = maxi - 10;//2012
+//creamos un objeto con los datos de busqueda
 const datosBusqueda = {
     marca: '',
     year: '',
@@ -34,187 +27,190 @@ const datosBusqueda = {
 //eventlisteners
 //cargar listeners
 document.addEventListener('DOMContentLoaded', () => {
-    //mostrar autos
+    //funcion para cargar los autos
     mostrarAutos( autos );
-    //funcion para mostrar años en el select
+    //llenarselect años
     llenarSelect();
-    //filtrarAutos
-    marca.addEventListener('change', e => {
+    //FILTROS
+    marca.addEventListener('change', ( e ) => {
         //console.log( e.target.value );
-        //insertar el e.target.value al objeto
         datosBusqueda.marca = e.target.value;
-        //funcion para filtrar autos
+        //lo mandamos a la funcion filtrarAutos()
         filtrarAutos();
     });
-    year.addEventListener('change', e => {
+    year.addEventListener('change', ( e ) => {
         //console.log( e.target.value );
-        //insertar el e.target.value al objeto
         datosBusqueda.year = parseInt( e.target.value );
-        //funcion para filtrar autos
+        //lo mandamos a la funcion filtrarAutos()
         filtrarAutos();
     });
-    minimo.addEventListener('change', e => {
+    minimo.addEventListener('change', ( e ) => {
         //console.log( e.target.value );
-        //insertar el e.target.value al objeto
         datosBusqueda.minimo = parseInt( e.target.value );
-        //funcion para filtrar autos
+        //lo mandamos a la funcion filtrarAutos()
         filtrarAutos();
     });
-    maximo.addEventListener('change', e => {
+    maximo.addEventListener('change', ( e ) => {
         //console.log( e.target.value );
-        //insertar el e.target.value al objeto
-        datosBusqueda.maximo = parseInt( e.target.value );
-        //funcion para filtrar autos
+        datosBusqueda.maximo = parseInt(e.target.value);
+        //lo mandamos a la funcion filtrarAutos()
         filtrarAutos();
     });
-    puertas.addEventListener('change', e => {
+    puertas.addEventListener('change', ( e ) => {
         //console.log( e.target.value );
-        //insertar el e.target.value al objeto
         datosBusqueda.puertas = parseInt( e.target.value );
-        //funcion para filtrar autos
+        //lo mandamos a la funcion filtrarAutos()
         filtrarAutos();
     });
-    transmision.addEventListener('change', e => {
+    transmision.addEventListener('change', ( e ) => {
         //console.log( e.target.value );
-        //insertar el e.target.value al objeto
         datosBusqueda.transmision = e.target.value;
-        //funcion para filtrar autos
+        //lo mandamos a la funcion filtrarAutos()
         filtrarAutos();
     });
-    color.addEventListener('change', e => {
+    color.addEventListener('change', ( e ) => {
         //console.log( e.target.value );
-        //insertar el e.target.value al objeto
         datosBusqueda.color = e.target.value;
-        //funcion para filtrar autos
+        //lo mandamos a la funcion filtrarAutos()
         filtrarAutos();
     });
 });
 
 //funciones
-//mostrar autos
-function mostrarAutos( autos ) {
-    //limipiar html anterior
+//funcion para mostrar autos
+function mostrarAutos( autos ){
+    //limpiar html anterior
     limpiarHTML();
-    //recorrer el array para mostrarlos en el html
+    //construir el html
+    //recorremos el arreglo de los autos con foreach
     autos.forEach( auto => {
         //destructuring
         const { color, marca, modelo, precio, puertas, transmision, year } = auto;
-        //construimos un elemento html
+        //elemento html
         const autoHTML = document.createElement('p');
-        //insertar textcontent
-        autoHTML.textContent = `${ marca } ${ modelo } ${ year } - Precio: ${ precio } - Transmision: ${ transmision } - Puertas: ${ puertas } - Color: ${ color }`;
-        //renderizar
-        resultados.appendChild( autoHTML );
+        //añadir el textcontent
+        autoHTML.textContent = `${marca} ${modelo} $ ${precio} - Año: ${year} - Color: ${color} - Transmision: ${transmision} - Puertas: ${puertas}`;
+        //renderizamos
+        resultado.appendChild( autoHTML );
     });
 }
 //limpiar html anterior
 function limpiarHTML() {
-    while ( resultados.firstChild ) {
-        resultados.removeChild( resultados.firstChild );
+    while ( resultado.firstChild ) {
+        resultado.removeChild( resultado.firstChild );
     }
 }
-//select para mostrar años
+//funcion para llenar el select de años del año actual - 10
 function llenarSelect() {
-    //for para llenar el select 
     for (let i = maxi; i >= min; i--) {
-        //construimos un option para llenar el select
+        //creamos el html
         const option = document.createElement('option');
-        //value de option
-        option.value = i;
-        //text content
+        //insertar texto
         option.textContent = i;
-        //renderizar 
+        //añadir el value del option
+        option.value = i;
+        //renderizamos
         year.appendChild( option );
     }
 }
-//filtrar autos
+//funcion para filtrar autos
 function filtrarAutos() {
-    //filtrar
-    const resultado = autos.filter( filtrarMarca ).filter( filtrarYear ).filter( filtrarMinimo ).filter( filtrarMaximo ).filter( filtrarPuertas ).filter( filtrarTransmision ).filter( filtrarColor );
-    
-    if ( resultado.length ) {
-        mostrarAutos( resultado );
-    }else {
-        //mensaje de no resultados
-        noResultados();
+    //filtrar autos
+    const resultados = autos.filter( filtrarMarca ).filter( filtrarYear ).filter( filtrarPrecioMinimo ).filter( filtrarPrecioMaximo ).filter( filtrarPuertas ).filter( filtrarTransmision ).filter( filtrarColor );
+    //console.log( resultados );
+    if ( resultados.length > 0 ) {
+        //funcion para renderizar
+        mostrarAutos( resultados );
+    }else{
+        //mensaje error
+        noResultados('NO HAY RESULTADOS, CAMBIAR LOS PARAMETROS DE BUSQUEDA');
     }
 }
-//no resultados
-function noResultados() {
-    //limpiar html()
-    limpiarHTML() 
-    //
-    const mensaje = document.createElement('p');
-    //clases
-    mensaje.classList.add('border', 'error');
-    //texcontent
-    mensaje.textContent = 'NO HAY RESULTADOS, CAMBIE LOS PARAMETROS DE BUSQUEDA';
+//FUNCION PARA MOSTRAR MENSAJE DE ERROR
+function noResultados( error ) {
+    //limpiar el html anterior
+    limpiarHTML();
+    //construir el html
+    const mensajeError = document.createElement('p');
+    //añadir clase
+    mensajeError.classList.add('error');
+    //añadir texto
+    mensajeError.textContent = error;
     //renderizar
-    resultados.appendChild( mensaje );
+    resultado.appendChild( mensajeError );
 }
-//funcion para ffiltrar por marca
+//funcion para filtrar por marca
 function filtrarMarca( auto ) {
     //destructuring
     const { marca } = datosBusqueda;
-    //verificar si MARCA trae un valor
+    //verificar que venga con valor MARCA
     if ( marca ) {
-        //retornamos los valores filtrados
         return auto.marca === marca;
     }
+    //en caso de que no se seleccione nada retornamos el arreglo completo
     return auto;
 }
-//filtrar por año
+//funcion para filtrar por año
 function filtrarYear( auto ) {
     //destructuring
     const { year } = datosBusqueda;
-    //verificar si viene un valor
+    //verificar que venga con valor MARCA
     if ( year ) {
-        //retornar valores filtrados
         return auto.year === year;
     }
-    //retornar el array completo en caso de que no se seleccione nada
+    //en caso de que no se seleccione nada retornamos el arreglo completo
     return auto;
 }
-//filtrar por precio minimo
-function filtrarMinimo( auto ) {
+//funcion para filtrar por precio minimo
+function filtrarPrecioMinimo( auto ) {
     //destructuring
     const { minimo } = datosBusqueda;
-    //verificar si viene un valor
+    //verificar que venga con valor MARCA
     if ( minimo ) {
-        //comparamos el precio con el precio.minimo
         return auto.precio >= minimo;
     }
+    //en caso de que no se seleccione nada retornamos el arreglo completo
     return auto;
 }
-//filtrar precio maximo
-function filtrarMaximo( auto ) {
+//funcion para filtrar por precio maximo
+function filtrarPrecioMaximo( auto ) {
+    //destructuring
     const { maximo } = datosBusqueda;
+    //verificar que venga con valor MARCA
     if ( maximo ) {
         return auto.precio <= maximo;
     }
+    //en caso de que no se seleccione nada retornamos el arreglo completo
     return auto;
+//funcion para filtrar por precio maximo
 }
-//filtrar por numero de puertas
 function filtrarPuertas( auto ) {
+    //destructuring
     const { puertas } = datosBusqueda;
+    //verificar que venga con valor puertas
     if ( puertas ) {
         return auto.puertas === puertas;
     }
+    //en caso de que no se seleccione nada retornamos el arreglo completo
     return auto;
 }
-//filtrar por transmision
 function filtrarTransmision( auto ) {
+    //destructuring
     const { transmision } = datosBusqueda;
+    //verificar que venga con valor transmision
     if ( transmision ) {
         return auto.transmision === transmision;
     }
+    //en caso de que no se seleccione nada retornamos el arreglo completo
     return auto;
 }
-//filtrar por color
 function filtrarColor( auto ) {
+    //destructuring
     const { color } = datosBusqueda;
+    //verificar que venga con valor color
     if ( color ) {
         return auto.color === color;
     }
+    //en caso de que no se seleccione nada retornamos el arreglo completo
     return auto;
 }
